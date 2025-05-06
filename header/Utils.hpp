@@ -16,23 +16,30 @@ class Utils
         bool showBackground = false;
         bool showImage = false;
         bool playMusic = false;
+        bool Sound = false;
+
+        int currentBatchIndex = 0;
+        std::vector<std::string> currentBatch;
 
         void loadBackground(SDL_Renderer* renderer, const std::string& path);
         void renderBackground(SDL_Renderer* renderer);
         void unloadBackground();
 
-        void loadImage(SDL_Renderer* renderer, const std::string& path);
-        void renderImage(SDL_Renderer* renderer, SDL_Rect dst);
-        void unloadImage();
+        void loadImages(SDL_Renderer* renderer, const std::string& path);
+        void renderImages(SDL_Renderer* renderer, size_t index, SDL_Rect dst);
+        void unloadImages();
 
         void playBackgroundMusic(const std::string& path);
         void stopMusic();
 
-        void loadTextboxFromFile(const std::string& path);
-        void updateTextbox();
+        void playSound(const std::string& path);
+
+        void loadTextboxFromFile(const std::string& filename);
+        void updateTextbox(Uint32 currentTime);
         void renderTextbox(SDL_Renderer* renderer, TTF_Font* font);
-        bool textboxFinished();
+        void nextTextboxFrame();
         void resetTextbox();
+        bool textboxFinished();
 
         void renderText(SDL_Renderer* renderer, TTF_Font* font, const std::string& text, int x, int y);
 
@@ -42,15 +49,15 @@ class Utils
         virtual ~Utils();
     private:
         SDL_Texture* background = nullptr;
-        SDL_Texture* image = nullptr;
+        std::vector<SDL_Texture*> images;
         Mix_Music* music = nullptr;
+        Mix_Chunk* chunk = nullptr;
 
-        int currentLine = 0;
         std::vector<std::string> textboxLines;
+        std::vector<std::string> linesToShow;
+        int currentLineIndex = 0;
         Uint32 lastLineTime = 0;
-        const Uint32 lineDelay = 1000;
-
-
+        Uint32 lineTimer = 800;
 };
 
 #endif
